@@ -7,10 +7,10 @@ pagetitle: Bailey Jannuzzi
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## [Home](http://bailey-jj.github.io/) | [About Me](http://bailey-jj.github.io/about-me/)
+###### [Home](http://bailey-jj.github.io/) \| [About Me](http://bailey-jj.github.io/about-me/) \| [CV](http://bailey-jj.github.io/CV/) \| [Portfolio](http://bailey-jj.github.io/portfolio/) \| [Contact](http://bailey-jj.github.io/contact/)
 
-# Bailey Jannuzzi
+## Bailey Jannuzzi
 
-```{r, out.width = "30%", echo = FALSE}
-knitr:: include_graphics("./IMG_8859.png")
+```{r, out.width = "15%", echo = FALSE}
+knitr::include_graphics("./media/montynussphotographybailey073.JPG")
 ```
