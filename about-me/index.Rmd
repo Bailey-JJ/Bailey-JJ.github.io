@@ -1,0 +1,24 @@
+---
+output: html_document
+pagetitle: About Me
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###### [Home](http://bailey-jj.github.io/) \| [About Me](http://bailey-jj.github.io/about-me/) \| [CV](http://bailey-jj.github.io/CV/) \| [Portfolio](http://bailey-jj.github.io/portfolio/) \| [Contact](http://bailey-jj.github.io/contact/)
+
+### About Me
+
+Hi! I'm Bailey Jannuzzi. I am currently a bioinformatics major at Utah Valley University.
+
+In any free time I have I enjoy caring for my houseplants, cooking, hiking, stargazing, and (poorly) painting.
+
+### Contact Info
+
+Email: [bailey.jannuzzi\@gmail.com](mailto:bailey.jannuzzi@gmail.com){.email}
+
+[LinkedIn](linkedin.com/in/bailey-jannuzzi-b094a426b)
+
+[Github](https://github.com/Bailey-JJ)
