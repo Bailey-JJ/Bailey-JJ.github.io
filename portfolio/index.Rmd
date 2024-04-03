@@ -1,0 +1,14 @@
+---
+output: html_document
+pagetitle: Portfolio
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###### [Home](http://bailey-jj.github.io/) \| [About Me](http://bailey-jj.github.io/about-me/) \| [CV](http://bailey-jj.github.io/CV/) \| [Portfolio](http://bailey-jj.github.io/portfolio/) \| [Contact](http://bailey-jj.github.io/contact/)
+
+## Projects
+
+Meteorite Data: https://bailey-jj.shinyapps.io/meteor_app/
