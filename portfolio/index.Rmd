@@ -11,4 +11,4 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Projects
 
-Meteorite Data: https://bailey-jj.shinyapps.io/Meteor_Map_App/
+[Final Project App](https://bailey-jj.shinyapps.io/Meteor_Map_App/){.uri}

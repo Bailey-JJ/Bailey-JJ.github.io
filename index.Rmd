@@ -14,3 +14,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, out.width = "15%", echo = FALSE}
 knitr::include_graphics("./media/montynussphotographybailey073.JPG")
 ```
+
+### Contact Info
+
+Email: [bailey.jannuzzi\@gmail.com](mailto:bailey.jannuzzi@gmail.com){.email}
+
+[LinkedIn](linkedin.com/in/bailey-jannuzzi-b094a426b)
+
+[Github](https://github.com/Bailey-JJ)
