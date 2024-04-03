@@ -130,16 +130,15 @@ ui <- fluidPage(
       sliderInput("year_m", label = h5("Year"), min = 860, max = 2013, value = c(860, 2013), step = 10),
       
       dashboardSidebar(sidebarSearchForm(textId = "searchtext", buttonId = "searchbutton",
-                                         label = "Search Class", icon = icon("search")))
+                                         label = "Search Class", icon = icon("search"))),
+      tableOutput("filtered_table")
     ),
-      
-      tableOutput("filtered_table"),
     
-    position = "left"),
+    position = c("left", "right"),
     
     mainPanel(
-        leafletOutput("Meteors"))
-  )
+      leafletOutput("Meteors"))
+  ))
 
 
 ## SERVER ####
@@ -147,21 +146,6 @@ server <- function(input, output){
   filteredData <- reactive({
     m_circles %>%
       dplyr::filter(m_circles$year > input$year_m)
-  })
-  
-   example_data1 <- read_csv("search_list.csv")
-
-   example_data2 <- data.table(
-     Meteorclass = example_data1$meteorclass,
-     Description = example_data1$description)
-  
-  output$filtered_table <- renderTable({
-    req(input$searchbutton == FALSE)
-    example_data2[Meteorclass %like% input$searchtext]
-  })
-  
-  observe({
-    print(input$m_dictionary)
   })
   
   output$Meteors <- renderLeaflet({
@@ -191,9 +175,20 @@ server <- function(input, output){
                  color = ~pal(year))
   })
   
+  example_data1 <- read_csv("search_list.csv")
+  
+  example_data2 <- data.table(
+    Meteorclass = example_data1$meteorclass,
+    Description = example_data1$description)
+  
+  output$filtered_table <- renderTable({
+    req(input$searchbutton == FALSE)
+    example_data2[Meteorclass %like% input$searchtext]
+  })
+  
+  observe({
+    print(input$m_dictionary)
+  })
 }
 
-
 shinyApp(ui, server)
-
-
