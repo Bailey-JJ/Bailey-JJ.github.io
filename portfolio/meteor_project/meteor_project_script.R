@@ -6,16 +6,13 @@ library(shiny)
 library(leaflet)
 library(easystats)
 library(patchwork)
-library(plotly)
 library(janitor)
 library(shinydashboard)
 library(data.table)
 
 meteors <- read_csv("./meteorites.csv")
 
-bolides <- read_csv("./bolides.csv")
-
-# In the dataset, there is a correction needed to be made, Northwest Africa 7701, should say 2010, not 2101
+# In the data-set, there is a correction needed to be made, Northwest Africa 7701, should say 2010, not 2101
 
 meteors[meteors$name == "Northwest Africa 7701", 7] <- 2010
 meteors[meteors$name == "Northwest Africa 7701", 7]
@@ -24,6 +21,9 @@ meteors[meteors$name == "Northwest Africa 7701", 7]
 m_circles <- 
   meteors %>% 
   filter(!is.na(meteors$lat) & !is.na(meteors$long))
+
+m_circles %>% 
+  print(n = 38401)
 
 pal <- colorFactor("viridis", levels = m_circles$year)
 
@@ -39,50 +39,43 @@ leaflet() %>%
                             "Geolocation: ", m_circles$geolocation),
              color = ~pal(year))
 
-# Next step isto let user select a year, class, or mass to view
+# Graph displaying the count for each class
+m_circles %>% 
+  ggplot(aes(x = class)) +
+  geom_bar() 
 
+m_circles %>% 
+  group_by(class) %>%
+  count() %>% 
+  filter(n > 900) %>% 
+  ggplot(aes(x = class, y = n)) +
+  geom_col(aes(fill = class))
+  
 
-### Bolides Cleaning and Mapping (May or may not use this dataset in the end product) ####
-b_circles <-  
-  bolides %>% 
-  janitor::clean_names() %>% 
-  filter(!is.na(bolides$latitude) & !is.na(bolides$longitude)) %>% 
-  filter(!is.na(bolides$`altitude(km)`) & !is.na(bolides$`total impact energy`))
+m_circles %>% 
+  dplyr::filter(fall == "Fell") %>% 
+  dplyr::filter(year > 1900) %>% 
+  group_by(year) %>%
+  count() %>% 
+  ggplot(aes(x = year, y = n)) +
+  geom_point()
 
-b_circles <- 
-  b_circles %>%
-  separate(col = latitude, into = c('lat', 'direction'), sep = -1, remove = FALSE) %>%
-  mutate(long = as.numeric(lat)) %>% 
-  select(-latitude) %>% 
-  separate(col = longitude, into = c('long', 'direction2'), sep = -1, remove = FALSE) %>%
-  mutate(long = as.numeric(long)) %>% 
-  select(-longitude)
+m_circles %>% 
+  group_by(class) %>% 
+  count() %>%
+  filter(n > 1000)
 
-b_circles <- 
-  within(b_circles, {
-    lat <- ifelse(direction=="N", lat, (as.numeric(lat) * -1))
-  }) %>% 
-  select(-direction)
+l5 <- 
+  m_circles %>% 
+    filter(class == "L5")
 
-b_circles <- 
-  within(b_circles, {
-    long <- ifelse(direction2=="E", long, (as.numeric(long) * -1))
-  }) %>% 
-  select(-direction2)
+mean(l5$mass, na.rm = TRUE)
+  
+acap <- 
+  m_circles %>% 
+  filter(class == "Acapulcoite")
 
-b_circles$lat <- b_circles$lat %>% as.numeric
-b_circles$long <- b_circles$long %>% as.numeric
-
-pal2 <- colorFactor("viridis", levels = b_circles$total_impact_energy)
-
-leaflet() %>%
-  addTiles() %>%
-  setView(lng = 0.0, lat = 0.0, zoom = 0.5) %>% 
-  addCircles(data = b_circles, radius = 100,
-             popup = paste0("Altitude: ", b_circles$altitude_km, " kilometers", '<br>',
-                            "Total Impact Energy: ", b_circles$total_impact_energy, '<br>',
-                            "GeoLocation: ", "(", b_circles$lat, ", ", b_circles$long, ")"),
-             color = ~pal2(total_impact_energy))
+mean(acap$mass, na.rm = TRUE)
 
 
 ### Exploring data ####
@@ -107,11 +100,9 @@ place_names <-
 
 unique(place_names$name)
 
+
+
 # Making Shiny App ####
-data_list = list(
-  "Meteors" = m_circles,
-  "Bolides" = b_circles
-)
 
 ## UI ####
 
@@ -127,7 +118,10 @@ ui <- fluidPage(
   sidebarLayout(
     
     sidebarPanel(
-      sliderInput("year_m", label = h5("Year"), min = 860, max = 2013, value = c(860, 2013), step = 10),
+      
+      selectInput("class_m", label = h5("Class"), choices = m_circles$class),
+      sliderInput("year_m", label = h5("Year"), min = 860, max = 2013, value = range(860, 2013), step = 10),
+      sliderInput("mass_m", label = h5("Mass"), min = 0, max = 60000000, value = range(0.00, 60000000.00), step = 1500000.00),
       
       dashboardSidebar(sidebarSearchForm(textId = "searchtext", buttonId = "searchbutton",
                                          label = "Search Class", icon = icon("search"))),
@@ -144,15 +138,18 @@ ui <- fluidPage(
 ## SERVER ####
 server <- function(input, output){
   filteredData <- reactive({
-    m_circles %>%
-      dplyr::filter(m_circles$year > input$year_m)
+    m_circles %>% 
+      dplyr::filter(class %like% input$class_m) %>% 
+      dplyr::filter(year >= input$year_m[1] & year <= input$year_m[2]) %>% 
+      dplyr::filter(mass >= input$mass_m[1] & mass <= input&mass_m[2])
   })
   
+  
   output$Meteors <- renderLeaflet({
-    leaflet() %>%
+    leaflet(filteredData()) %>%
       addTiles() %>%
       setView(lng = 0.0, lat = 0.0, zoom = 0.5) %>% 
-      addCircles(data = filteredData(), radius = 100,
+      addCircles(data = filteredData(), 
                  popup = paste0("Name: ", m_circles$name, '<br>',
                                 "ID: ", m_circles$id, '<br>',
                                 m_circles$fall, " in: ", m_circles$year, '<br>', 
@@ -162,16 +159,17 @@ server <- function(input, output){
                  color = ~pal(year))
   })
   
-  observe({
+  observeEvent(input$class_m, {
+    m_popup <- paste0("Name: ", filteredData()$name, '<br>',
+                      "ID: ", filteredData()$id, '<br>',
+                      filteredData()$fall, " in: ", filteredData()$year, '<br>', 
+                      "Class: ", filteredData()$class, '<br>',
+                      "Mass: ", filteredData()$mass, " grams", '<br>',
+                      "Geolocation: ", filteredData()$geolocation)
     leafletProxy("Meteors") %>%
       clearMarkers() %>%
       addCircles(data = filteredData(), 
-                 popup = paste0("Name: ", m_circles$name, '<br>',
-                                "ID: ", m_circles$id, '<br>',
-                                m_circles$fall, " in: ", m_circles$year, '<br>', 
-                                "Class: ", m_circles$class, '<br>',
-                                "Mass: ", m_circles$mass, " grams", '<br>',
-                                "Geolocation: ", m_circles$geolocation),
+                 popup = m_popup,
                  color = ~pal(year))
   })
   
