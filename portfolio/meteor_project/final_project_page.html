@@ -1860,6 +1860,32 @@ meteors[meteors$name == &quot;Northwest Africa 7701&quot;, 7]
 m_circles &lt;- 
   meteors %&gt;% 
   filter(!is.na(meteors$lat) &amp; !is.na(meteors$long))</code></pre>
+<div id="meteorite-classes-and-what-they-mean" class="section level4">
+<h4>Meteorite Classes and What They Mean</h4>
+<p>Each meteorite class has varying masses, this is mostly based on
+their origins as well as their formation conditions. Their formation
+conditions and composition affects how much of the meteorite burns up in
+the atmosphere, and their relative masses. The most common meteorite
+types fall under classes H and L. The purpose of identifying these
+meteorites is that they can give us information about the early
+universe, and how different pockets of the universe have changed over
+time.</p>
+<p>There are many different meteorite classes, each with their own
+sub-classes and even further sub-classes. However all meteorites fall
+under two main classes: Undifferentiated and Differentiated.</p>
+<p>The Undifferentiated meteorites are also called Chondrites, and these
+meteorites can be further broken down into the four main groups:
+“Carbonaceous”, “Ordinary”, “Rumuruti”, and “Enstatite”. These four
+groups can be broken down further into more sub-classes.<br />
+Within the Chondrites, an attached “Petrologic Type” is attached, this
+provides information about the condition of the meteorite, the lower the
+number the more pristine condition the meteorite is in. With 6 being the
+a Chondrite that has been greatly altered by heat and other
+processes.<br />
+The Differentiated meteorites are separated into 3 types: “Achondrites”,
+“Iron Meteorites”, and “Stony-Iron Meteorites”. Each of these can also
+be further broken down into more sub-classes.</p>
+</div>
 <div id="a-look-into-the-dataset" class="section level4">
 <h4>A Look into the Dataset</h4>
 <p>Here is a look into the data-set that I am looking into: This
@@ -5110,13 +5136,8 @@ Fell
 </table>
 </div>
 </div>
-<div id="summary-of-the-classes-i-will-be-analyzing" class="section level4">
-<h4>Summary of the Classes I Will be Analyzing</h4>
-<p>Each meteorite class has varying masses, this is mostly based on
-their origins as well as their formation conditions. Their formation
-conditions and composition affects how much of the meteorite burns up in
-the atmosphere, and their relative masses. The most common meteorite
-types fall under classes H and L.</p>
+<div id="visualizing-the-dataset" class="section level4">
+<h4>Visualizing the Dataset</h4>
 <pre class="r"><code>m_circles %&gt;% 
   ggplot(aes(x = class)) +
   geom_bar() +
@@ -5186,16 +5207,19 @@ count of meteorites per year.</p>
 </div>
 <div id="discussion-and-conclusion" class="section level3">
 <h3>Discussion and Conclusion</h3>
-<p>Overall with this project I had a lot of fun and have many more
-things I wish to keep adding in order to keep working on my skills. My
+<p>Overall, I had a lot of fun with this project and along the way I
+have developed many more ideas for skills I want to keep working on. My
 main goal for the project was to make a shiny app that was able to
 display meteorite locations and popup information. I was able to filter
 these maps and learn some new syntax and formatting in the process.
 Throughout working on this project I also came across several other
 packages that I would like to learn to use, and I have a better grasp on
 where I need to begin in order to learn to use these packages. Talk
-about learning to use leaflet and shiny, looking into meteorites,
-etc.</p>
+about learning to use leaflet and shiny, looking into meteorites, etc.
+One of my initial ideas for this project was to also include data on
+Bolides, and along the way I decided that I would save that data-set for
+a future project where I could work with the Rayshader package and build
+a 3D map.</p>
 </div>
 
 
