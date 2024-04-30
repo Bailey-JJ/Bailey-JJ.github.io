@@ -42,14 +42,22 @@ leaflet() %>%
 # Graph displaying the count for each class
 m_circles %>% 
   ggplot(aes(x = class)) +
-  geom_bar() 
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 2)) +
+  labs(x = "Meteorite Classes",
+       y = "Count")
 
 m_circles %>% 
   group_by(class) %>%
   count() %>% 
   filter(n > 900) %>% 
   ggplot(aes(x = class, y = n)) +
-  geom_col(aes(fill = class))
+  geom_col(aes(fill = class)) +
+  theme(axis.text.x = element_text(vjust = 0.5, size = 7)) +
+  scale_fill_viridis_d() +
+  labs(x = "Meteorite Classes",
+       y = "Count",
+       fill = 'Class')
   
 
 m_circles %>% 
@@ -58,7 +66,12 @@ m_circles %>%
   group_by(year) %>%
   count() %>% 
   ggplot(aes(x = year, y = n)) +
-  geom_point()
+  geom_line() +
+  scale_fill_viridis_d() +
+  theme(axis.title.x = element_text(vjust = 0.5, size = 7)) +
+  labs(x = "Year",
+       y = "Count")
+
 
 m_circles %>% 
   group_by(class) %>% 
@@ -107,11 +120,11 @@ unique(place_names$name)
 ## UI ####
 
 ui <- fluidPage(
-  titlePanel("Meteorite & Bolide Maps"),
+  titlePanel("Meteorite Map"),
   
   theme = bslib::bs_theme(version = 4, bootswatch = "minty"),
   
-  sources_text <-  "Meteorite Classification Information From...",
+  sources_text <-  "Meteorite Classification Information From http://www.meteorite.fr/en/classification/ordinarychon.html",
   
   h6(textOutput("sources_text")),
   
@@ -119,29 +132,38 @@ ui <- fluidPage(
     
     sidebarPanel(
       
-      selectInput("class_m", label = h5("Class"), choices = m_circles$class),
+      selectInput("class_m", label = h5("Class"), choices = c("All", m_circles$class)),
       sliderInput("year_m", label = h5("Year"), min = 860, max = 2013, value = range(860, 2013), step = 10),
-      sliderInput("mass_m", label = h5("Mass"), min = 0, max = 60000000, value = range(0.00, 60000000.00), step = 1500000.00),
+      sliderInput("mass_m", label = h5("Mass"), min = 0, max = 60000000, value = range(0.00, 60000000), step = 1000),
       
       dashboardSidebar(sidebarSearchForm(textId = "searchtext", buttonId = "searchbutton",
                                          label = "Search Class", icon = icon("search"))),
-      tableOutput("filtered_table")
     ),
     
     position = c("left", "right"),
     
     mainPanel(
-      leafletOutput("Meteors"))
+      tabsetPanel(type = "tab",
+                  tabPanel(title = "Map", leafletOutput("Meteors")),
+                  tabPanel(title = "Classification Information", tableOutput("filtered_table"))))
   ))
 
 
 ## SERVER ####
 server <- function(input, output){
+  
   filteredData <- reactive({
-    m_circles %>% 
-      dplyr::filter(class %like% input$class_m) %>% 
-      dplyr::filter(year >= input$year_m[1] & year <= input$year_m[2]) %>% 
-      dplyr::filter(mass >= input$mass_m[1] & mass <= input&mass_m[2])
+    if (input$class_m == "All") {
+      m_circles %>% 
+        dplyr::filter(year >= input$year_m[1] & year <= input$year_m[2]) %>% 
+        dplyr::filter(mass >= input$mass_m[1] & mass <= input$mass_m[2])
+    }
+    else {
+      m_circles %>% 
+        dplyr::filter(class %like% input$class_m) %>% 
+        dplyr::filter(year >= input$year_m[1] & year <= input$year_m[2]) %>% 
+        dplyr::filter(mass >= input$mass_m[1] & mass <= input$mass_m[2])
+    }
   })
   
   
@@ -150,13 +172,13 @@ server <- function(input, output){
       addTiles() %>%
       setView(lng = 0.0, lat = 0.0, zoom = 0.5) %>% 
       addCircles(data = filteredData(), 
-                 popup = paste0("Name: ", m_circles$name, '<br>',
-                                "ID: ", m_circles$id, '<br>',
-                                m_circles$fall, " in: ", m_circles$year, '<br>', 
-                                "Class: ", m_circles$class, '<br>',
-                                "Mass: ", m_circles$mass, " grams", '<br>',
-                                "Geolocation: ", m_circles$geolocation),
-                 color = ~pal(year))
+                 popup = paste0("Name: ", filteredData()$name, '<br>',
+                                "ID: ", filteredData()$id, '<br>',
+                                filteredData()$fall, " in: ", filteredData()$year, '<br>', 
+                                "Class: ", filteredData()$class, '<br>',
+                                "Mass: ", filteredData()$mass, " grams", '<br>',
+                                "Geolocation: ", filteredData()$geolocation),
+                 color = ~pal(filteredData()$year))
   })
   
   observeEvent(input$class_m, {
@@ -170,14 +192,14 @@ server <- function(input, output){
       clearMarkers() %>%
       addCircles(data = filteredData(), 
                  popup = m_popup,
-                 color = ~pal(year))
+                 color = ~pal(filteredData()$year))
   })
   
   example_data1 <- read_csv("search_list.csv")
   
   example_data2 <- data.table(
-    Meteorclass = example_data1$meteorclass,
-    Description = example_data1$description)
+    Meteorclass = example_data1$Meteorclass,
+    Description = example_data1$Description)
   
   output$filtered_table <- renderTable({
     req(input$searchbutton == FALSE)
@@ -188,5 +210,3 @@ server <- function(input, output){
     print(input$m_dictionary)
   })
 }
-
-shinyApp(ui, server)
