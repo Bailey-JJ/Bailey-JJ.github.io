@@ -1837,24 +1837,13 @@ looking at the main classes of meteorites.</p>
 
 library(tidyverse)
 library(kableExtra)
-library(shiny)
-library(leaflet)
-library(easystats)
 library(patchwork)
-library(janitor)
-library(shinydashboard)
-library(data.table)
 
 meteors &lt;- read_csv(&quot;./meteorites.csv&quot;)
 
 # In the dataset, there is a correction needed to be made, Northwest Africa 7701, should say 2010, not 2101
 
 meteors[meteors$name == &quot;Northwest Africa 7701&quot;, 7] &lt;- 2010
-meteors[meteors$name == &quot;Northwest Africa 7701&quot;, 7]
-## # A tibble: 1 × 1
-##    year
-##   &lt;dbl&gt;
-## 1  2010
 
 ### Meteor Cleaning and Mapping ####
 m_circles &lt;- 
@@ -5163,8 +5152,6 @@ classes, the graph below shows those 8 classes and their counts.</p>
 <p>When looking at the data I wanted to visualize count over the years.
 The graph below is just looking at counts per year.</p>
 <pre class="r"><code>m_circles %&gt;% 
-  #dplyr::filter(fall == &quot;Fell&quot;) %&gt;% 
-  #dplyr::filter(year &gt; 1900) %&gt;% 
   group_by(year) %&gt;%
   count() %&gt;% 
   ggplot(aes(x = year, y = n)) +
@@ -5176,7 +5163,6 @@ The graph below is just looking at counts per year.</p>
 <p>The graph below looks at the same display as above but zoomed into
 the year 1900s to recent years.</p>
 <pre class="r"><code>m_circles %&gt;% 
-  #dplyr::filter(fall == &quot;Fell&quot;) %&gt;% 
   dplyr::filter(year &gt; 1900) %&gt;% 
   group_by(year) %&gt;%
   count() %&gt;% 
