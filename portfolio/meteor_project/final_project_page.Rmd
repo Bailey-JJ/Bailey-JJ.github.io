@@ -20,27 +20,20 @@ Want to see my Shiny app?\
 
 ### My Goal For This Project
 
-My goal for this project was to learn how to map out data using leaflet. I also wanted to look into meteorite data, each meteorite has a class that it is given, and these classes are defined by their presumed origin. My main goal with this data set was to look at a meteorite's class and its mass. Certain meteorite's composition has an impact on how much of it is able to make it to Earth, and I wanted to look at that relationship. There is a lot of classifications and sub-classes for meteorites, so for the purpose of this project I will be looking at the main classes of meteorites.
+My goal for this project was to learn how to map out data using leaflet. I also wanted to look into meteorite data, each meteorite has a class that it is given, and these classes are defined by their presumed origin and composition. My main goal with this data set was to look at a meteorite's class and its mass. Certain meteorite's composition has an impact on how much of it is able to make it to Earth, and I wanted to look at that relationship. There is a lot of classifications and sub-classes for meteorites, so for the purpose of this project I will be looking at the main classes of meteorites.
 
 ```{r cleaning code, echo=TRUE, message=FALSE, warning=FALSE, collapse=TRUE}
 options(scipen = 999)
 
 library(tidyverse)
 library(kableExtra)
-library(shiny)
-library(leaflet)
-library(easystats)
 library(patchwork)
-library(janitor)
-library(shinydashboard)
-library(data.table)
 
 meteors <- read_csv("./meteorites.csv")
 
 # In the dataset, there is a correction needed to be made, Northwest Africa 7701, should say 2010, not 2101
 
 meteors[meteors$name == "Northwest Africa 7701", 7] <- 2010
-meteors[meteors$name == "Northwest Africa 7701", 7]
 
 ### Meteor Cleaning and Mapping ####
 m_circles <- 
@@ -48,30 +41,41 @@ m_circles <-
   filter(!is.na(meteors$lat) & !is.na(meteors$long))
 ```
 
+#### Meteorite Classes and What They Mean
+
+Each meteorite class has varying masses, this is mostly based on their origins as well as their formation conditions. Their formation conditions and composition affects how much of the meteorite burns up in the atmosphere, and their relative masses. The most common meteorite types fall under classes H and L. The purpose of identifying these meteorites is that they can give us information about the early universe, and how different pockets of the universe have changed over time.
+  
+There are many different meteorite classes, each with their own sub-classes and even further sub-classes. However all meteorites fall under two main classes: Undifferentiated and Differentiated.
+  
+The Undifferentiated meteorites are also called Chondrites, and these meteorites can be further broken down into the four main groups: "Carbonaceous", "Ordinary", "Rumuruti", and "Enstatite". These four groups can be broken down further into more sub-classes.  
+Within the Chondrites, an attached "Petrologic Type" is attached, this provides information about the condition of the meteorite, the lower the number the more pristine condition the meteorite is in. With 6 being the a Chondrite that has been greatly altered by heat and other processes.  
+  
+The Differentiated meteorites are separated into 3 types: "Achondrites", "Iron Meteorites", and "Stony-Iron Meteorites". Each of these can also be further broken down into more sub-classes.  
+  
+
 #### A Look into the Dataset
 
-Here is a look into the data-set that I am looking into: This data-set comes from NASA's collection [insert link], but the downloaded csv file comes from Kaggle [insert link]. Note that there was a comment made for the data-set, the csv upon download has an type error; the meteorite, Northwest Africa 7701, should have a year value of 2010, not 2101, this is corrected for during the cleaning of the data-set.
+Here is a look into the data-set that I am looking into: This data-set comes from NASA's collection but the downloaded csv file comes from [Kaggle](https://www.kaggle.com/datasets/sujaykapadnis/meteorites-dataset?resource=download&select=meteorites.csv). Note that there was a comment made for the data-set, the csv upon download has an type error; the meteorite, Northwest Africa 7701, should have a year value of 2010, not 2101, this is corrected for during the cleaning of the data-set.
 
 ```{r A look into the data-set, echo=FALSE, message=FALSE, warning=FALSE, collapse=TRUE}
-#m_circles %>% 
-  #kable %>%
-  #kable_styling("striped", full_width = F) %>% 
-  #scroll_box(width = "500px", height = "200px")
+m_circles[1:100,] %>% 
+  kable %>%
+  kable_styling("striped", full_width = F) %>% 
+ scroll_box(width = "800px", height = "200px")
 ```
-
-#### Summary of the Classes I Will be Analyzing
-
-[Insert a brief summary into meteorite classes, and brief information]
-
-Each meteorite class has varying masses, this is mostly based on their origins as well as their formation conditions. Their formation conditions and composition affects how much of the meteorite burns up in the atmosphere, and their relative masses. The most common meteorite fall under classes H and L.
+  
+#### Visualizing the Dataset
 
 ```{r Meteorite Count, echo=TRUE, message=FALSE, warning=FALSE, collapse=TRUE}
 m_circles %>% 
   ggplot(aes(x = class)) +
-  geom_bar()
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, size = 2)) +
+  labs(x = "Meteorite Classes",
+       y = "Count")
 ```
 
-The graph above shows each meteorite class, and its count for found meteorites. 8 classes of meteorites are visually much greater in count than all other classes, the graph below shows those 8 classes and their counts.
+The graph above shows each meteorite class, and their counts. 8 classes of meteorites are visually much greater in count than all other classes, the graph below shows those 8 classes and their counts.
 
 ```{r 8 most common meteorite count, echo=TRUE, message=FALSE, warning=FALSE, collapse=TRUE}
 m_circles %>% 
@@ -79,31 +83,39 @@ m_circles %>%
   count() %>% 
   filter(n > 900) %>% 
   ggplot(aes(x = class, y = n)) +
-  geom_col(aes(fill = class))
+  geom_col(aes(fill = class)) +
+  theme(axis.text.x = element_text(vjust = 0.5, size = 7)) +
+  scale_fill_viridis_d() +
+  labs(x = "Meteorite Classes",
+       y = "Count",
+       fill = 'Class')
 ```
 
 When looking at the data I wanted to visualize count over the years. The graph below is just looking at counts per year.
 
 ```{r Meteor Count Over Time, echo=TRUE, message=FALSE, warning=FALSE, collapse=TRUE}
 m_circles %>% 
-  #dplyr::filter(fall == "Fell") %>% 
-  #dplyr::filter(year > 1900) %>% 
   group_by(year) %>%
   count() %>% 
   ggplot(aes(x = year, y = n)) +
-  geom_line()
+  geom_col() +
+  theme(axis.text.x = element_text(vjust = 0.5, size = 7)) +
+  labs(x = "Year",
+       y = "Count")
 ```
 
 The graph below looks at the same display as above but zoomed into the year 1900s to recent years.
 
 ```{r 1900s+ Graph, echo=TRUE, message=FALSE, warning=FALSE, collapse=TRUE}
 m_circles %>% 
-  #dplyr::filter(fall == "Fell") %>% 
   dplyr::filter(year > 1900) %>% 
   group_by(year) %>%
   count() %>% 
   ggplot(aes(x = year, y = n)) +
-  geom_line()
+  geom_line() +
+  theme(axis.text.x = element_text(vjust = 0.5, size = 7)) +
+  labs(x = "Year",
+       y = "Count")
 ```
 
 When looking at the graph above initially, there seems to be a trend of more meteorites "falling" starting in the 1900s and beyond. To get a better look, the graph below displays a graph that is filtered and only shows meteorites labeled as "Fell", to get a visualization of the actual count of meteorites per year.
@@ -115,34 +127,15 @@ m_circles %>%
   group_by(year) %>%
   count() %>% 
   ggplot(aes(x = year, y = n)) +
-  geom_line()
+  geom_line() +
+  theme(axis.text.x = element_text(vjust = 0.5, size = 7)) +
+  labs(x = "Year",
+       y = "Meteorite Count") + 
+  ggtitle("Fallen Meteorites")
 ```
 
-```{r exploring, message=FALSE, warning=FALSE, collapse=TRUE, include=FALSE}
-### Exploring data ####
-m_circles %>% 
-  dplyr::filter(!is.na(year)) %>% 
-  ggplot(aes(x = year, y = mass, color = name_type)) + 
-  geom_point()
+### Discussion and Conclusion
 
-# This graph shows the expected results, that there are more meteors being found from 1700s to current day.
-
-max(m_circles$year, na.rm = TRUE)
-min(m_circles$year, na.rm = TRUE)
-
-max(m_circles$mass, na.rm = TRUE)
-min(m_circles$mass, na.rm = TRUE)
-
-place_names <- 
-  m_circles %>% 
-  filter(!is.na(year)) %>% 
-  mutate(name = trimws(str_remove(name, "(\\s+[A-Za-z]+)?[0-9-]+")))
-
-unique(place_names$name)
-```
-
-### Discussion
-
+Overall, I had a lot of fun with this project and along the way I have developed many more ideas for skills I want to keep working on. My main goal for the project was to make a shiny app that was able to display meteorite locations and popup information. I was able to filter these maps and learn some new syntax and formatting in the process. Throughout working on this project I also came across several other packages that I would like to learn to use, and I have a better grasp on where I need to begin in order to learn to use these packages.
 Talk about learning to use leaflet and shiny, looking into meteorites, etc.
-
-### Conclusion
+One of my initial ideas for this project was to also include data on Bolides, and along the way I decided that I would save that data-set for a future project where I could work with the Rayshader package and build a 3D map.
