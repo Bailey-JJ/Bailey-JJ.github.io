@@ -436,6 +436,7 @@
             <li data-filter="*" class="filter-active">All</li>
             <li data-filter=".filter-lab">Lab</li>
             <li data-filter=".filter-presentation">Presentations</li>
+            <li data-filter=".filter-fieldwork">Fieldwork</li>
           </ul><!-- End Portfolio Filters -->
 
           <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
@@ -540,7 +541,51 @@
                   </div>
                 </div>
               </div><!-- End Portfolio Item -->
+
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-fieldwork">
+                <div class="portfolio-content h-100">
+                  <img src="assets/img/portfolio/collection_trip_selfie.jpeg" class="img-fluid" alt="">
+                  <div class="portfolio-info">
+                    <h4>August 2025 Collection Trip</h4>
+                    <a href="assets/img/portfolio/collection_trip_selfie.jpeg" title="App 1" data-gallery="portfolio-gallery-app">
+                      <i class="bi bi-zoom-in"></i>
+                  </div>
+                </div>
+              </div><!-- End Portfolio Item -->
+
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-fieldwork">
+                <div class="portfolio-content h-100">
+                  <img src="assets/img/portfolio/fly_trap_001.jpeg" class="img-fluid" alt="">
+                  <div class="portfolio-info">
+                    <h4>Blow Fly Survey Trap</h4>
+                    <a href="assets/img/portfolio/fly_trap_001.jpeg" title="App 1" data-gallery="portfolio-gallery-app">
+                      <i class="bi bi-zoom-in"></i>
+                  </div>
+                </div>
+              </div><!-- End Portfolio Item -->
               
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-fieldwork">
+                <div class="portfolio-content h-100">
+                  <img src="assets/img/portfolio/fly_trap_002.jpeg" class="img-fluid" alt="">
+                  <div class="portfolio-info">
+                    <h4>Blow Fly Survey Trap</h4>
+                    <a href="assets/img/portfolio/fly_trap_002.jpeg" title="App 1" data-gallery="portfolio-gallery-app">
+                      <i class="bi bi-zoom-in"></i>
+                  </div>
+                </div>
+              </div><!-- End Portfolio Item -->
+
+              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-fieldwork">
+                <div class="portfolio-content h-100">
+                  <img src="assets/img/portfolio/pinning_001.jpeg" class="img-fluid" alt="">
+                  <div class="portfolio-info">
+                    <h4>Pinning Flies</h4>
+                    <a href="assets/img/portfolio/pinning_001.jpeg" title="App 1" data-gallery="portfolio-gallery-app">
+                      <i class="bi bi-zoom-in"></i>
+                  </div>
+                </div>
+              </div><!-- End Portfolio Item -->
+
             </div><!-- End Portfolio Items -->
 
           </div><!-- End Portfolio Container -->
@@ -629,6 +674,26 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const fieldworkFilter = document.getElementById("fieldwork-filter");
+    const subfilters = document.getElementById("fieldwork-subfilters");
+    const mainFilters = document.getElementById("main-filters");
+
+    fieldworkFilter.addEventListener("click", function () {
+      subfilters.style.display = "flex";
+    });
+
+    mainFilters.querySelectorAll("li").forEach(filter => {
+      if (filter !== fieldworkFilter) {
+        filter.addEventListener("click", function () {
+          subfilters.style.display = "none";
+        });
+      }
+    });
+  });
+</script>
 
 </body>
 
