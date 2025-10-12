@@ -543,6 +543,7 @@
                     <h4>PBESA Poster</h4>
                     <a href="assets/img/portfolio/pbesa.gif" title="App 1" data-gallery="portfolio-gallery-app">
                       <i class="bi bi-zoom-in"></i>
+                      </a>
                   </div>
                 </div>
               </div><!-- End Portfolio Item -->
@@ -554,6 +555,7 @@
                     <h4>August 2025 Collection Trip</h4>
                     <a href="assets/img/portfolio/collection_trip_selfie.jpeg" title="App 1" data-gallery="portfolio-gallery-app">
                       <i class="bi bi-zoom-in"></i>
+                      </a>
                   </div>
                 </div>
               </div><!-- End Portfolio Item -->
@@ -565,6 +567,7 @@
                     <h4>Blow Fly Survey Trap</h4>
                     <a href="assets/img/portfolio/fly_trap_001.jpeg" title="App 1" data-gallery="portfolio-gallery-app">
                       <i class="bi bi-zoom-in"></i>
+                      </a>
                   </div>
                 </div>
               </div><!-- End Portfolio Item -->
@@ -576,6 +579,7 @@
                     <h4>Blow Fly Survey Trap</h4>
                     <a href="assets/img/portfolio/fly_trap_002.jpeg" title="App 1" data-gallery="portfolio-gallery-app">
                       <i class="bi bi-zoom-in"></i>
+                      </a>
                   </div>
                 </div>
               </div><!-- End Portfolio Item -->
@@ -587,6 +591,7 @@
                     <h4>Pinning Flies</h4>
                     <a href="assets/img/portfolio/pinning_001.jpeg" title="App 1" data-gallery="portfolio-gallery-app">
                       <i class="bi bi-zoom-in"></i>
+                      </a>
                   </div>
                 </div>
               </div><!-- End Portfolio Item -->
@@ -629,11 +634,10 @@
           </div>
         </div><!-- End Info Item -->
         
-        <!-- Calendar Embed -->
-        <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300" align="center" style="margin-top: 30px;">
+          <!-- Calendar Embed -->
+        <div align="center" style="margin-top: 30px;">
             <iframe style="border: 0" width="800" height="600" frameborder="0" scrolling="no" src="https://calendar.google.com/calendar/embed?mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FDenver&amp;src=03547d4db66476431d589f6b45be0cb64c15a98a3d1cbcc615da755c76e3589e%40group.calendar.google.com&amp;color=%23039BE5&amp;showPrint=0&amp;showTabs=0&amp;showCalendars=0"></iframe>
         </div>
-
 
       </div>
     </div>
@@ -657,49 +661,94 @@
       </div>
     </div>
 
-  </footer>
+</footer>
+
+
 
   <!-- Scroll Top -->
+
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
+
+
   <!-- Preloader -->
+
   <div id="preloader"></div>
 
+
+
   <!-- Vendor JS Files -->
+
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
   <script src="assets/vendor/php-email-form/validate.js"></script>
+
   <script src="assets/vendor/aos/aos.js"></script>
+
   <script src="assets/vendor/typed.js/typed.umd.js"></script>
+
   <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+
   <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
+
   <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+
   <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+
   <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
 
+
+
   <!-- Main JS File -->
+
   <script src="assets/js/main.js"></script>
 
+
+
   <script>
+
   document.addEventListener("DOMContentLoaded", function () {
+
     const fieldworkFilter = document.getElementById("fieldwork-filter");
+
     const subfilters = document.getElementById("fieldwork-subfilters");
+
     const mainFilters = document.getElementById("main-filters");
 
+
+
     fieldworkFilter.addEventListener("click", function () {
+
       subfilters.style.display = "flex";
+
     });
+
+
 
     mainFilters.querySelectorAll("li").forEach(filter => {
+
       if (filter !== fieldworkFilter) {
+
         filter.addEventListener("click", function () {
+
           subfilters.style.display = "none";
+
         });
+
       }
+
     });
+
   });
+
 </script>
 
+
+
 </body>
+
+
 
 </html>
